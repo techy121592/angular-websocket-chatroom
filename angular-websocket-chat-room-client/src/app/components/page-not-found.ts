@@ -16,7 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  **/
 
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'page-not-found',
@@ -24,4 +25,6 @@ import {Component} from '@angular/core';
   templateUrl: '../templates/page-not-found.html'
 })
 
-export class PageNotFoundComponent {}
+export class PageNotFoundComponent {
+  constructor (private router: Router) { }
+}
