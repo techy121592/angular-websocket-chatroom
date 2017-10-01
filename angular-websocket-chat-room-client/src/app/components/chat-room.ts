@@ -33,8 +33,7 @@ export class ChatRoomComponent {
 
   constructor (
     private chatRoomService: ChatRoomService,
-    private route: ActivatedRoute,
-    private router: Router
+    private route: ActivatedRoute
   ) {
     this.messages = [];
   }
@@ -43,16 +42,23 @@ export class ChatRoomComponent {
 
   messageReceived(event: any) {
     let dataObj = JSON.parse(event.data);
-    this.messages.push(new Message(dataObj.author, dataObj.message));
+    this.messages.push(new Message(
+      dataObj.author,
+      dataObj.message,
+      dataObj.size,
+      dataObj.bold,
+      dataObj.italic));
   }
 
-  sendMessage(message: string) {
+  sendMessage(message: string, size: string, bold: boolean, italic: boolean) {
     let messageObj = {
       chatRoomKey: this.route.snapshot.params['chatRoomKey'],
-      message: message
+      message: message,
+      size: size,
+      bold: bold,
+      italic: italic
     };
     this.socket.next(messageObj);
-
   }
 
   connectToChatRoom() {
@@ -62,5 +68,9 @@ export class ChatRoomComponent {
 }
 
 export class Message {
-  constructor(public author: string, public message: string) { }
+  constructor(public author: string,
+              public message: string,
+              public size: string,
+              public bold: boolean,
+              public italic: boolean) { }
 }

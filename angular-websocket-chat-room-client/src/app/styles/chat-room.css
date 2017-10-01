@@ -19,3 +19,33 @@ ul {
   margin-bottom: 0.5em;
   box-shadow: 0.2em 0.1em 0.1em grey;
 }
+
+#formatting-tools {
+  margin-bottom: 0.5em;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.small {
+  font-size: small;
+}
+
+.medium {
+  font-size: medium;
+}
+
+.large {
+  font-size: large;
+}
+
+.system {
+  background: purple;
+  color: lightgreen;
+  font-weight: bold;
+}
