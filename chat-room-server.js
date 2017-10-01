@@ -37,6 +37,10 @@ function createMessageString(author, message, size, bold, italic) {
     });
 }
 
+server.broadcastMessage = function broadcast(author, message, size, bold, italic) {
+    this.broadcast(createMessageString(author, message, size, bold, italic));
+};
+
 server.broadcast = function broadcast(data) {
     console.log(`sending: ${data}`);
     server.clients.forEach(function each(client) {
@@ -49,48 +53,52 @@ server.broadcast = function broadcast(data) {
 server.on('connection', function connection(socket) {
     console.log('user connected');
 
+    socket.sendMessage = function(author, message, size, bold, italic) {
+        console.log(`Sending message: ${message}`);
+        this.send(createMessageString(author, message, size, bold, italic));
+    };
+
     function hashString(inputString) {
         return crypto.createHmac('sha256', secret)
             .update(inputString)
             .digest('hex');
     }
 
+    function sendUpdatedUserList() {
+        let simplifiedUserList = [];
+        for (const hash in users) {
+            simplifiedUserList.push(users[hash]);
+        }
+        server.broadcast(JSON.stringify({users: simplifiedUserList}));
+    }
+
+    function createNewUser(name) {
+        const hashedString = hashString(name);
+        if(!users[hashedString]) {
+            console.log(`user[${hashedString}] = ${name}`);
+            users[hashedString] = name;
+            console.log('Sending chat room key');
+            return hashedString;
+        } else {
+            console.log('Sending "Username taken"');
+            return 'Username taken';
+        }
+    }
+
     socket.on('message', function incoming(data) {
         console.log(`data: ${data}`);
         let dataObj = JSON.parse(data);
         if(dataObj.message && users[dataObj.chatRoomKey]) {
-            // Broadcast the user's message
             console.log(`message received: ${dataObj.message}`);
-            server.broadcast(createMessageString(users[dataObj.chatRoomKey],
-                dataObj.message,
-                dataObj.size,
-                dataObj.bold,
-                dataObj.italic));
+            server.broadcastMessage(users[dataObj.chatRoomKey], dataObj.message, dataObj.size, dataObj.bold, dataObj.italic);
         } else if(users[dataObj.chatRoomKey]) {
-            server.broadcast(createMessageString('Server',
-                `${users[dataObj.chatRoomKey]} has joined the chat room.`));
+            server.broadcastMessage('Server', `${users[dataObj.chatRoomKey]} has joined the chat room.`);
             console.log(`user joined: ${users[dataObj.chatRoomKey]}`);
-
-            let simplifiedUserList = [];
-            for(const hash in users) {
-                simplifiedUserList.push(users[hash]);
-            }
-
-            server.broadcast(JSON.stringify({ users: simplifiedUserList }));
+            sendUpdatedUserList();
         } else if(dataObj.name) {
-            const hashedString = hashString(dataObj.name);
-            if(!users[hashedString]) {
-                console.log(`user[${hashedString}] = ${dataObj.name}`);
-                users[hashedString] = dataObj.name;
-                console.log('Sending chat room key');
-                socket.send(hashedString);
-            } else {
-                console.log('Sending "Username taken"');
-                socket.send('Username taken');
-            }
+            socket.send(createNewUser(dataObj.name));
         } else {
-            console.log('Sending "Invalid Username"');
-            socket.send(createMessageString('Server', 'Invalid username'));
+            socket.sendMessage('Server', 'Invalid username');
         }
     });
 });
