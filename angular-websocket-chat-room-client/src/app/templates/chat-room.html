@@ -1,0 +1,11 @@
+<div>
+  <h1>Chat Room</h1>
+  <ul id='messages'>
+    <li class='message' *ngFor="let message of this.messages">
+      <b>{{message.author}}</b> - {{message.message}}
+    </li>
+  </ul>
+  <input #newMessage placeholder="Message" type="text"
+         (keyup.enter)="sendMessage(newMessage.value); newMessage.value = ''"/>
+  <button (click)="sendMessage(newMessage.value); newMessage.value = ''">Send</button>
+</div>

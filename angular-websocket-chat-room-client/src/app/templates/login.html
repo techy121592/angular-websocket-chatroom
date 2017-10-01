@@ -1,0 +1,5 @@
+<div class="chat-room">
+  <h2>Login</h2>
+  <input #username type="text" placeholder="Username" (keyup.enter)="connectToChatRoom(username.value)" />
+  <button (click)="connectToChatRoom(username.value)">Sign In</button>
+</div>
