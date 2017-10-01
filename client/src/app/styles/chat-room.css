@@ -12,30 +12,42 @@ ul {
   margin: 0;
 }
 
+h3 {
+  margin: 0;
+}
+
+#chat-room {
+  width: 800px;
+}
+
 #messages {
-  border: solid black 1px;
   max-height: 14em;
   overflow-y: auto;
-  margin-bottom: 0.5em;
-  box-shadow: 0.2em 0.1em 0.1em grey;
-  float: left;
-  width: 73%;
 }
 
 #users {
-  width: 23%;
+  width: 22%;
   float: right;
 }
 
-#formatting-tools {
+#message, #messages, #formatting-tools {
   margin-bottom: 0.5em;
-  float: left;
-  width: 73%;
 }
 
-#new-message {
+#messages, #formatting-tools, #new-message {
+  width: 72%;
+  margin-right: 0.5em;
   float: left;
-  width: 73%;
+}
+
+#messages, #formatting-tools, #new-message {
+  float: left;
+}
+
+#messages, #users, #formatting-tools, #new-message {
+  border: solid black 1px;
+  box-shadow: 0.2em 0.1em 0.1em grey;
+  padding: 0.5em;
 }
 
 input[type="text"] {
@@ -66,8 +78,4 @@ input[type="text"] {
   background: purple;
   color: lightgreen;
   font-weight: bold;
-}
-
-h3 {
-  margin: 0;
 }
