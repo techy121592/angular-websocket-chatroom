@@ -16,8 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  **/
 
-import {Injectable} from "@angular/core";
-import { Subject, Observable, Observer } from "rxjs";
+import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
+import { createSocket } from "./common/socket";
 
 @Injectable()
 export class ChatRoomService {
@@ -25,35 +26,9 @@ export class ChatRoomService {
 
   public connect(url, chatRoomKey): Subject<MessageEvent> {
     if(!this.socket) {
-      this.socket = this.create(url, chatRoomKey);
+      this.socket = createSocket(url, 'chatRoomKey', chatRoomKey);
     }
 
     return this.socket;
-  }
-
-  private create(url, chatRoomKey): Subject<MessageEvent> {
-    let socket = new WebSocket(url);
-
-    let observable = Observable.create(
-      (obs: Observer<MessageEvent>) => {
-        socket.onmessage = obs.next.bind(obs);
-        socket.onerror = obs.error.bind(obs);
-        socket.onclose = obs.complete.bind(obs);
-        socket.onopen = () => {
-          socket.send(`{"chatRoomKey": "${chatRoomKey}"}`);
-        };
-
-        return socket.close.bind(socket);
-      });
-
-    let observer = {
-      next: (data: Object) => {
-        if(socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify(data));
-        }
-      }
-    };
-
-    return Subject.create(observer, observable);
   }
 }
