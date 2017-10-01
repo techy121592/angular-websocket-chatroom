@@ -29,6 +29,7 @@ import { ChatRoomService } from '../services/chat-room';
 
 export class ChatRoomComponent {
   messages: Message[];
+  users: string[];
   socket: any;
 
   constructor (
@@ -36,18 +37,23 @@ export class ChatRoomComponent {
     private route: ActivatedRoute
   ) {
     this.messages = [];
+    this.users = [];
   }
 
   ngOnInit() { this.connectToChatRoom(); }
 
   messageReceived(event: any) {
     let dataObj = JSON.parse(event.data);
-    this.messages.push(new Message(
-      dataObj.author,
-      dataObj.message,
-      dataObj.size,
-      dataObj.bold,
-      dataObj.italic));
+    if(dataObj.message) {
+      this.messages.push(new Message(
+        dataObj.author,
+        dataObj.message,
+        dataObj.size,
+        dataObj.bold,
+        dataObj.italic));
+    } else if(dataObj.users) {
+      this.users = dataObj.users;
+    }
   }
 
   sendMessage(message: string, size: string, bold: boolean, italic: boolean) {

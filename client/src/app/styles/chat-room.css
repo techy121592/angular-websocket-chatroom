@@ -18,10 +18,28 @@ ul {
   overflow-y: auto;
   margin-bottom: 0.5em;
   box-shadow: 0.2em 0.1em 0.1em grey;
+  float: left;
+  width: 73%;
+}
+
+#users {
+  width: 23%;
+  float: right;
 }
 
 #formatting-tools {
   margin-bottom: 0.5em;
+  float: left;
+  width: 73%;
+}
+
+#new-message {
+  float: left;
+  width: 73%;
+}
+
+input[type="text"] {
+  width: 85%;
 }
 
 .bold {
@@ -48,4 +66,8 @@ ul {
   background: purple;
   color: lightgreen;
   font-weight: bold;
+}
+
+h3 {
+  margin: 0;
 }

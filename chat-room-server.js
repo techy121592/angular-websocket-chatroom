@@ -37,8 +37,7 @@ function createMessageString(author, message, size, bold, italic) {
     });
 }
 
-server.broadcast = function broadcast(author, message, size, bold, italic) {
-    let data = createMessageString(author, message, size, bold, italic);
+server.broadcast = function broadcast(data) {
     console.log(`sending: ${data}`);
     server.clients.forEach(function each(client) {
         if(client.readyState === WebSocket.OPEN) {
@@ -62,14 +61,22 @@ server.on('connection', function connection(socket) {
         if(dataObj.message && users[dataObj.chatRoomKey]) {
             // Broadcast the user's message
             console.log(`message received: ${dataObj.message}`);
-            server.broadcast(users[dataObj.chatRoomKey],
+            server.broadcast(createMessageString(users[dataObj.chatRoomKey],
                 dataObj.message,
                 dataObj.size,
                 dataObj.bold,
-                dataObj.italic);
+                dataObj.italic));
         } else if(users[dataObj.chatRoomKey]) {
-            server.broadcast('Server', `${users[dataObj.chatRoomKey]} has joined the chat room.`);
+            server.broadcast(createMessageString('Server',
+                `${users[dataObj.chatRoomKey]} has joined the chat room.`));
             console.log(`user joined: ${users[dataObj.chatRoomKey]}`);
+
+            let simplifiedUserList = [];
+            for(const hash in users) {
+                simplifiedUserList.push(users[hash]);
+            }
+
+            server.broadcast(JSON.stringify({ users: simplifiedUserList }));
         } else if(dataObj.name) {
             const hashedString = hashString(dataObj.name);
             if(!users[hashedString]) {

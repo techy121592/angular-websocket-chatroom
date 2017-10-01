@@ -17,6 +17,14 @@
       </li>
     </ul>
   </div>
+  <div id="users">
+    <h3>Users</h3>
+    <ul>
+      <li *ngFor="let user of this.users">
+        {{user}}
+      </li>
+    </ul>
+  </div>
   <div id="formatting-tools">
     <input #bold type="checkbox" /><strong>Bold</strong>
     <input #italic type="checkbox" /><em>Italic</em>
@@ -26,7 +34,7 @@
       <option value="large">Large</option>
     </select>
   </div>
-  <div>
+  <div id="new-message">
     <input #newMessage placeholder="Message" type="text"
            (keyup.enter)="sendMessage(newMessage.value, size.value, bold.checked, italic.checked); newMessage.value = ''"/>
     <button (click)="sendMessage(newMessage.value, size.value, bold.checked, italic.checked); newMessage.value = ''">Send</button>
